@@ -1,17 +1,25 @@
-const express = require("express");
-const cors = require("cors");
+import express from "express";
+import cors from "cors";
 
 const app = express();
 app.use(cors());
+app.use(express.json());
 
+// Root route
+app.get("/", (req, res) => {
+  res.send("Student Dashboard Backend is running 🚀");
+});
+
+// Example API
 app.get("/students", (req, res) => {
   res.json([
-    { name: "John", marks: 85 },
-    { name: "Sara", marks: 90 },
-    { name: "Mike", marks: 78 }
+    { name: "Suri" },
+    { name: "Geetha" }
   ]);
 });
 
-app.listen(5000, () => {
-  console.log("Server running on port 5000");
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
