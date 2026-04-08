@@ -1,16 +1,26 @@
 {
   "name": "student-dashboard-backend",
   "version": "1.0.0",
-  "description": "Student Dashboard Backend",
+  "description": "Backend for student dashboard",
   "main": "server.js",
-  "type": "module",
   "scripts": {
     "start": "node server.js"
   },
-  "author": "",
-  "license": "ISC",
   "dependencies": {
     "cors": "^2.8.6",
-    "express": "^5.2.1"
-  }
+    "express": "^4.22.1",
+    "mongoose": "^9.4.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sathvikathogaru-max/student-dashboard-backend.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/sathvikathogaru-max/student-dashboard-backend/issues"
+  },
+  "homepage": "https://github.com/sathvikathogaru-max/student-dashboard-backend#readme"
 }
