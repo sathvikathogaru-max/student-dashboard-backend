@@ -10,10 +10,14 @@ app.use(express.json());
 /* ---------------- MONGODB CONNECTION ---------------- */
 
 mongoose.connect(
-"mongodb+srv://teacher:teacher123@cluster0.uakpbjz.mongodb.net/studentportal?retryWrites=true&w=majority"
+  "mongodb+srv://teacher:teacher123@cluster0.uakpbjz.mongodb.net/studentportal?retryWrites=true&w=majority",
+  {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+  }
 )
 .then(() => console.log("MongoDB Connected ✅"))
-.catch(err => console.log(err));
+.catch(err => console.log("MongoDB Error:", err));
 
 
 /* ---------------- STUDENT MODEL ---------------- */
@@ -36,10 +40,10 @@ app.post("/teacher-login", (req, res) => {
   const { email, password } = req.body;
 
   if (email === "teacher@example.com" && password === "teacher123") {
-    res.json({ success: true, role: "teacher" });
-  } else {
-    res.json({ success: false, message: "Invalid teacher credentials" });
+    return res.json({ success: true, role: "teacher" });
   }
+
+  res.json({ success: false, message: "Invalid teacher credentials" });
 
 });
 
@@ -48,14 +52,22 @@ app.post("/teacher-login", (req, res) => {
 
 app.post("/student-login", async (req, res) => {
 
-  const { email, password } = req.body;
+  try {
 
-  const student = await Student.findOne({ email, password });
+    const { email, password } = req.body;
 
-  if (student) {
-    res.json({ success: true, student });
-  } else {
+    const student = await Student.findOne({ email, password });
+
+    if (student) {
+      return res.json({ success: true, student });
+    }
+
     res.json({ success: false, message: "Invalid student login" });
+
+  } catch (error) {
+
+    res.status(500).json({ error: "Server error" });
+
   }
 
 });
@@ -65,19 +77,27 @@ app.post("/student-login", async (req, res) => {
 
 app.post("/add-student", async (req, res) => {
 
-  const { name, email, password, marks, sports } = req.body;
+  try {
 
-  const newStudent = new Student({
-    name,
-    email,
-    password,
-    marks,
-    sports
-  });
+    const { name, email, password, marks, sports } = req.body;
 
-  await newStudent.save();
+    const newStudent = new Student({
+      name,
+      email,
+      password,
+      marks,
+      sports
+    });
 
-  res.json({ message: "Student added successfully ✅" });
+    await newStudent.save();
+
+    res.json({ message: "Student added successfully ✅" });
+
+  } catch (error) {
+
+    res.status(500).json({ error: "Error adding student" });
+
+  }
 
 });
 
@@ -86,27 +106,32 @@ app.post("/add-student", async (req, res) => {
 
 app.get("/students", async (req, res) => {
 
-  const students = await Student.find();
+  try {
 
-  res.json(students);
+    const students = await Student.find();
+
+    res.json(students);
+
+  } catch (error) {
+
+    res.status(500).json({ error: "Error fetching students" });
+
+  }
 
 });
 
 
-/* ---------------- SERVER ---------------- */
+/* ---------------- ROOT ROUTE ---------------- */
 
 app.get("/", (req, res) => {
   res.send("Student Portal Backend Running 🚀");
 });
+
+
+/* ---------------- SERVER ---------------- */
 
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
-
-
-
-
-
-
